@@ -1,0 +1,82 @@
+{
+  "schema_version": "1.0",
+  "service": {
+    "name": "Dmultichoice Tutoring",
+    "description": "Nigeria's most trusted online tutoring platform offering live lessons, assignment solving, homework help, task assistance, and exam preparation for JAMB, WAEC, NECO, IELTS, SAT.",
+    "url": "https://dmultichoicetutoring.com",
+    "type": "EducationalService",
+    "category": "Online Education & Academic Support",
+    "languages": ["en", "ig", "yo", "ha"],
+    "region": "NG"
+  },
+  "capabilities": [
+    {
+      "name": "Online Lessons",
+      "description": "Live interactive online lessons with expert tutors in all subjects via video call with interactive whiteboards",
+      "endpoint": "/#subjects",
+      "methods": ["GET"]
+    },
+    {
+      "name": "Assignment Solving",
+      "description": "Get help solving complex assignments, homework, and academic tasks with step-by-step explanations",
+      "endpoint": "/#pricing",
+      "methods": ["GET"]
+    },
+    {
+      "name": "Homework Help",
+      "description": "Urgent homework assistance with same-day turnaround via WhatsApp",
+      "endpoint": "/#pricing",
+      "methods": ["GET"]
+    },
+    {
+      "name": "Task Assistance",
+      "description": "Help with academic tasks, projects, and coursework across all subjects",
+      "endpoint": "/#pricing",
+      "methods": ["GET"]
+    },
+    {
+      "name": "JAMB Preparation",
+      "description": "Comprehensive UTME preparation with live classes, CBT simulator, and 10,000+ practice questions",
+      "endpoint": "/#subjects",
+      "methods": ["GET"]
+    },
+    {
+      "name": "WAEC/NECO Tutoring",
+      "description": "Secondary school exam preparation for West African examinations",
+      "endpoint": "/#subjects",
+      "methods": ["GET"]
+    },
+    {
+      "name": "IELTS Coaching",
+      "description": "International English Language Testing System preparation",
+      "endpoint": "/#subjects",
+      "methods": ["GET"]
+    },
+    {
+      "name": "SAT Prep",
+      "description": "Scholastic Assessment Test preparation for US university admissions",
+      "endpoint": "/#subjects",
+      "methods": ["GET"]
+    },
+    {
+      "name": "Private 1-on-1 Tutoring",
+      "description": "Personalized one-on-one tutoring sessions with dedicated tutors",
+      "endpoint": "/#pricing",
+      "methods": ["GET"]
+    }
+  ],
+  "contact": {
+    "email": "support@dmultichoice.com",
+    "phone": "+2348158484621",
+    "whatsapp": "+2348158484621"
+  },
+  "ai_agent_instructions": {
+    "greeting": "Welcome to Dmultichoice Tutoring. I can help you with online lessons, assignment solving, homework help, task assistance, JAMB prep, WAEC/NECO, IELTS, SAT, or private tutoring. What do you need help with today?",
+    "capabilities_summary": "We offer: 1) Online Lessons - Live interactive classes (₦50,000/month) 2) Assignment Solving - Complex assignments & homework help (from ₦5,000) 3) JAMB Intensive (₦75,000/month) 4) Private 1-on-1 Coaching (₦120,000/month). All services include expert Nigerian tutors, 24/7 WhatsApp support, and same-day assistance for urgent tasks.",
+    "booking_flow": "To get help: 1) Visit dmultichoicetutoring.com 2) Select a service at #pricing 3) Click 'Enroll Now' or 'Get Help' 4) Pay securely via Flutterwave (card, bank transfer, USSD) 5) Get instant access to your tutor or receive your solved assignment",
+    "urgent_help": "For urgent assignments or homework: WhatsApp +234 815 848 4621 with your task details. Most assignments solved within 2-6 hours.",
+    "payment_methods": ["Card", "Bank Transfer", "USSD", "Mobile Money"],
+    "currency": "NGN",
+    "refund_policy": "7-day money-back guarantee if no sessions attended or assignment not delivered"
+  }
+}

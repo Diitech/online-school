@@ -1,0 +1,123 @@
+import { Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import GlobeBackground from "./sections/GlobeBackground";
+import Navigation from "./sections/Navigation";
+import HeroSection from "./sections/HeroSection";
+import SocialProof from "./sections/SocialProof";
+import FeaturedSubjects from "./sections/FeaturedSubjects";
+import WhyChooseUs from "./sections/WhyChooseUs";
+import TutorsCarousel from "./sections/TutorsCarousel";
+import SuccessStories from "./sections/SuccessStories";
+import PricingSection from "./sections/PricingSection";
+import LearningProcess from "./sections/LearningProcess";
+import FAQSection from "./sections/FAQSection";
+import FinalCTA from "./sections/FinalCTA";
+import Footer from "./sections/Footer";
+import ChatBot from "./sections/ChatBot";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentFailed from "./pages/PaymentFailed";
+import NewsletterSection from "./sections/NewsletterSection";
+import UTMEBundlePromo from "./sections/UTMEBundlePromo";
+import EBookStoreCTA from "./sections/EBookStoreCTA";
+import EBookStorePage from "./pages/EBookStorePage";
+import ProductDetailPage from "./pages/ProductDetailPage";
+
+// Scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [pathname]);
+  return null;
+}
+
+// Home page with all sections
+function HomePage() {
+  return (
+    <>
+      <GlobeBackground />
+      <Navigation onNavigate={() => {}} currentPage="home" />
+      <main className="content-layer">
+        <HeroSection />
+        <SocialProof />
+        <UTMEBundlePromo />
+        <FeaturedSubjects />
+        <WhyChooseUs />
+        <TutorsCarousel />
+        <SuccessStories />
+        <PricingSection />
+        <EBookStoreCTA />
+        <LearningProcess />
+        <FAQSection />
+        <FinalCTA />
+        <NewsletterSection />
+      </main>
+      <Footer onNavigate={() => {}} />
+      <ChatBot />
+    </>
+  );
+}
+
+// Simple page layout for legal pages
+function SimplePage({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      <Navigation onNavigate={() => {}} currentPage="privacy" />
+      {children}
+      <Footer onNavigate={() => {}} />
+    </>
+  );
+}
+
+// eBook store page layout
+function EBookStoreLayout() {
+  return (
+    <>
+      <EBookStorePage />
+      <ChatBot />
+    </>
+  );
+}
+
+// Product detail layout
+function ProductDetailLayout() {
+  return (
+    <>
+      <ProductDetailPage />
+      <ChatBot />
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/privacy"
+          element={
+            <SimplePage>
+              <PrivacyPolicy />
+            </SimplePage>
+          }
+        />
+        <Route
+          path="/terms"
+          element={
+            <SimplePage>
+              <TermsOfService />
+            </SimplePage>
+          }
+        />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/ebooks" element={<EBookStoreLayout />} />
+        <Route path="/product/:productId" element={<ProductDetailLayout />} />
+      </Routes>
+    </>
+  );
+}
