@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   Mail,
   Phone,
@@ -10,43 +11,38 @@ import {
 import logo from "../assets/images/logo.jpeg";
 
 const quickLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "About Us", href: "#hero" },
-  { label: "Courses", href: "#subjects" },
-  { label: "Tutors", href: "#tutors" },
-  { label: "Results", href: "#success" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Blog", href: "#" },
-  { label: "Contact", href: "#footer" },
+  { label: "Home", href: "/" },
+  { label: "Courses", href: "/#subjects" },
+  { label: "Tutors", href: "/#tutors" },
+  { label: "Results", href: "/#success" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "eBook Store", href: "/ebooks" },
 ];
 
 const courseLinks = [
-  { label: "JAMB Preparation", href: "#subjects" },
-  { label: "WAEC / NECO", href: "#subjects" },
-  { label: "IELTS Coaching", href: "#subjects" },
-  { label: "SAT Prep", href: "#subjects" },
-  { label: "Mathematics", href: "#subjects" },
-  { label: "English", href: "#subjects" },
-  { label: "Coding for Kids", href: "#subjects" },
+  { label: "JAMB Preparation", href: "/#subjects" },
+  { label: "WAEC / NECO", href: "/#subjects" },
+  { label: "IELTS Coaching", href: "/#subjects" },
+  { label: "SAT Prep", href: "/#subjects" },
+  { label: "Mathematics", href: "/#subjects" },
+  { label: "English", href: "/#subjects" },
+  { label: "Coding for Kids", href: "/#subjects" },
 ];
 
-type Page = "home" | "privacy" | "terms";
+export default function Footer() {
+  const navigate = useNavigate();
 
-interface FooterProps {
-  onNavigate: (page: Page) => void;
-}
-
-export default function Footer({ onNavigate }: FooterProps) {
-  const handleClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-  ) => {
-    if (href.startsWith("#")) {
-      e.preventDefault();
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
-      }
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/#")) {
+      // Navigate to home with hash
+      navigate("/");
+      setTimeout(() => {
+        const id = href.replace("/#", "");
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      navigate(href);
     }
   };
 
@@ -65,15 +61,15 @@ export default function Footer({ onNavigate }: FooterProps) {
         >
           {/* Column 1: Brand */}
           <div>
-            <div className="relative w-10 h-10 rounded-lg overflow-hidden shadow-sm">
+            <div className="relative w-10 h-10 rounded-lg overflow-hidden shadow-sm mb-2">
               <img
                 src={logo}
                 alt="Dmultichoice"
                 className="w-full h-full object-cover"
               />
             </div>
-            <span>Dmultichoice_Tutoring</span>
-            <p className="font-body text-sm text-[#1A1A2E]/70 mb-4">
+            <span className="font-heading font-semibold text-[#1A1A2E]">Dmultichoice Tutoring</span>
+            <p className="font-body text-sm text-[#1A1A2E]/70 mt-2 mb-4">
               Empowering Students for Academic Excellence. Nigeria's most
               trusted online tutoring platform.
             </p>
@@ -113,13 +109,12 @@ export default function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2.5">
               {quickLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleClick(e, link.href)}
-                    className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors"
+                  <button
+                    onClick={() => handleNavClick(link.href)}
+                    className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
                   >
                     {link.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -133,13 +128,12 @@ export default function Footer({ onNavigate }: FooterProps) {
             <ul className="space-y-2.5">
               {courseLinks.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleClick(e, link.href)}
-                    className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors"
+                  <button
+                    onClick={() => handleNavClick(link.href)}
+                    className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
                   >
                     {link.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -176,17 +170,17 @@ export default function Footer({ onNavigate }: FooterProps) {
         {/* Bottom Bar */}
         <div className="border-t border-gray-200 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="font-body text-xs text-[#1A1A2E]/50">
-            © 2023 Dmultichoice_Tutoring. All rights reserved.
+            &copy; 2023 Dmultichoice Tutoring. All rights reserved.
           </p>
           <div className="flex gap-6">
             <button
-              onClick={() => onNavigate("privacy")}
+              onClick={() => navigate("/privacy")}
               className="font-body text-xs text-[#1A1A2E]/50 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer"
             >
               Privacy Policy
             </button>
             <button
-              onClick={() => onNavigate("terms")}
+              onClick={() => navigate("/terms")}
               className="font-body text-xs text-[#1A1A2E]/50 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer"
             >
               Terms of Service

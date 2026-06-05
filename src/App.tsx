@@ -18,11 +18,16 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentFailed from "./pages/PaymentFailed";
+import LatestNews from "./sections/LatestNews";
 import NewsletterSection from "./sections/NewsletterSection";
 import UTMEBundlePromo from "./sections/UTMEBundlePromo";
 import EBookStoreCTA from "./sections/EBookStoreCTA";
 import EBookStorePage from "./pages/EBookStorePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
+import NewsPage from "./pages/NewsPage";
+import ArticleDetailPage from "./pages/ArticleDetailPage";
+import NewsCategoryPage from "./pages/NewsCategoryPage";
+import NewsTagPage from "./pages/NewsTagPage";
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -38,7 +43,7 @@ function HomePage() {
   return (
     <>
       <GlobeBackground />
-      <Navigation onNavigate={() => {}} currentPage="home" />
+      <Navigation />
       <main className="content-layer">
         <HeroSection />
         <SocialProof />
@@ -53,8 +58,9 @@ function HomePage() {
         <FAQSection />
         <FinalCTA />
         <NewsletterSection />
+        <LatestNews />
       </main>
-      <Footer onNavigate={() => {}} />
+      <Footer />
       <ChatBot />
     </>
   );
@@ -64,9 +70,9 @@ function HomePage() {
 function SimplePage({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <Navigation onNavigate={() => {}} currentPage="privacy" />
+      <Navigation />
       {children}
-      <Footer onNavigate={() => {}} />
+      <Footer />
     </>
   );
 }
@@ -117,6 +123,10 @@ export default function App() {
         <Route path="/payment-failed" element={<PaymentFailed />} />
         <Route path="/ebooks" element={<EBookStoreLayout />} />
         <Route path="/product/:productId" element={<ProductDetailLayout />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/news/category/:categorySlug" element={<NewsCategoryPage />} />
+        <Route path="/news/tag/:tagSlug" element={<NewsTagPage />} />
+        <Route path="/news/:slug" element={<ArticleDetailPage />} />
       </Routes>
     </>
   );

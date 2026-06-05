@@ -11,8 +11,10 @@ import PricingSection from '../sections/PricingSection'
 import LearningProcess from '../sections/LearningProcess'
 import FAQSection from '../sections/FAQSection'
 import FinalCTA from '../sections/FinalCTA'
+import NewsletterSection from '../sections/NewsletterSection'
 import Footer from '../sections/Footer'
-import WhatsAppButton from '../sections/WhatsAppButton'
+import ChatBot from '../sections/ChatBot'
+import UTMEBundlePromo from '../sections/UTMEBundlePromo'
 
 type Page = 'home' | 'privacy' | 'terms'
 
@@ -50,6 +52,7 @@ export default function Home({ onNavigate }: HomeProps) {
       <main className="content-layer">
         <HeroSection />
         <SocialProof />
+        <UTMEBundlePromo />
         <FeaturedSubjects />
         <WhyChooseUs />
         <TutorsCarousel />
@@ -58,9 +61,10 @@ export default function Home({ onNavigate }: HomeProps) {
         <LearningProcess />
         <FAQSection />
         <FinalCTA />
+        <NewsletterSection />
         <Footer onNavigate={onNavigate} />
       </main>
-      <WhatsAppButton />
+      <ChatBot />
     </>
   )
 }

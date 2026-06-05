@@ -1,29 +1,26 @@
 import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowLeft } from "lucide-react";
 import logo from "../assets/images/logo.jpeg";
 
 const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "Courses", href: "#subjects" },
-  { label: "Tutors", href: "#tutors" },
-  { label: "Results", href: "#success" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "Contact", href: "#footer" },
+  { label: "Home", href: "/" },
+  { label: "Courses", href: "/#subjects" },
+  { label: "Tutors", href: "/#tutors" },
+  { label: "Results", href: "/#success" },
+  { label: "Pricing", href: "/#pricing" },
+  { label: "News", href: "/news" },
+  { label: "eBooks", href: "/ebooks" },
 ];
 
-interface NavigationProps {
-  onNavigate: (page: "home" | "privacy" | "terms") => void;
-  currentPage?: "home" | "privacy" | "terms";
-}
-
-export default function Navigation({
-  onNavigate,
-  currentPage = "home",
-}: NavigationProps) {
+export default function Navigation() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isHome = currentPage === "home";
+
+  const isHome = location.pathname === "/";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,21 +30,30 @@ export default function Navigation({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    href: string,
-  ) => {
-    e.preventDefault();
+  const handleNavClick = (href: string) => {
     setMobileOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
+    if (href.startsWith("/#")) {
+      // Navigate to home with hash scrolling
+      if (location.pathname === "/") {
+        const id = href.replace("/#", "");
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => {
+          const id = href.replace("/#", "");
+          const el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    } else {
+      navigate(href);
     }
   };
 
   const handleGoHome = () => {
     setMobileOpen(false);
-    onNavigate("home");
+    navigate("/");
   };
 
   return (
@@ -66,7 +72,7 @@ export default function Navigation({
           {/* Back arrow for non-home pages */}
           {!isHome && (
             <button
-              onClick={handleGoHome}
+              onClick={() => navigate(-1)}
               className={`mr-3 p-2 rounded-lg transition-colors duration-200 ${
                 scrolled || !isHome
                   ? "text-[#1A3C6E] hover:bg-gray-100"
@@ -78,13 +84,10 @@ export default function Navigation({
             </button>
           )}
 
-          <a
-            href="#hero"
-            onClick={(e) => {
-              e.preventDefault();
-              handleGoHome();
-            }}
-            className="flex items-center gap-3 shrink-0"
+          {/* Logo - clickable to home */}
+          <button
+            onClick={handleGoHome}
+            className="flex items-center gap-3 shrink-0 bg-transparent border-none cursor-pointer"
           >
             <div className="relative w-10 h-10 rounded-lg overflow-hidden shadow-sm">
               <img
@@ -100,38 +103,48 @@ export default function Navigation({
             >
               DmultichoiceTutoring
             </span>
-          </a>
+          </button>
 
-          {/* Desktop nav - only show on home page */}
-          {isHome && (
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => handleNavClick(e, link.href)}
-                  className={`font-heading text-sm font-medium transition-colors duration-200 hover:text-[#C9921A] ${
-                    scrolled ? "text-[#1A1A2E]" : "text-white/90"
-                  }`}
-                >
-                  {link.label}
-                </a>
-              ))}
-            </div>
-          )}
-
-          {/* Desktop CTA - only show on home page */}
-          {isHome && (
-            <div className="hidden md:block">
-              <a
-                href="#pricing"
-                onClick={(e) => handleNavClick(e, "#pricing")}
-                className="inline-block bg-[#C9921A] text-white font-heading text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#b07d16] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+          {/* Desktop nav */}
+          <div className="hidden md:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <button
+                key={link.href}
+                onClick={() => handleNavClick(link.href)}
+                className={`font-heading text-sm font-medium transition-colors duration-200 hover:text-[#C9921A] bg-transparent border-none cursor-pointer ${
+                  scrolled ? "text-[#1A1A2E]" : "text-white/90"
+                } ${location.pathname === link.href ? "text-[#C9921A]" : ""}`}
               >
-                Enroll Now
-              </a>
-            </div>
-          )}
+                {link.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Desktop CTA */}
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={() => navigate("/privacy")}
+              className={`font-heading text-xs font-medium transition-colors duration-200 hover:text-[#C9921A] bg-transparent border-none cursor-pointer ${
+                scrolled ? "text-[#1A1A2E]/60" : "text-white/60"
+              }`}
+            >
+              Privacy
+            </button>
+            <button
+              onClick={() => navigate("/terms")}
+              className={`font-heading text-xs font-medium transition-colors duration-200 hover:text-[#C9921A] bg-transparent border-none cursor-pointer ${
+                scrolled ? "text-[#1A1A2E]/60" : "text-white/60"
+              }`}
+            >
+              Terms
+            </button>
+            <button
+              onClick={() => handleNavClick("/#pricing")}
+              className="inline-block bg-[#C9921A] text-white font-heading text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#b07d16] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+            >
+              Enroll Now
+            </button>
+          </div>
 
           {/* Mobile menu button */}
           <button
@@ -158,73 +171,55 @@ export default function Navigation({
             className="md:hidden bg-white/95 backdrop-blur-md shadow-lg overflow-hidden"
           >
             <div className="px-4 py-4 space-y-1">
-              {isHome ? (
-                <>
-                  {navLinks.map((link, index) => (
-                    <motion.a
-                      key={link.href}
-                      href={link.href}
-                      onClick={(e) => handleNavClick(e, link.href)}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="block font-heading text-[#1A1A2E] font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200"
-                    >
-                      {link.label}
-                    </motion.a>
-                  ))}
+              {navLinks.map((link, index) => (
+                <motion.button
+                  key={link.href}
+                  onClick={() => handleNavClick(link.href)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="block w-full text-left font-heading text-[#1A1A2E] font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 bg-transparent border-none cursor-pointer"
+                >
+                  {link.label}
+                </motion.button>
+              ))}
 
-                  <motion.button
-                    onClick={() => {
-                      setMobileOpen(false);
-                      onNavigate("privacy");
-                    }}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navLinks.length * 0.05 }}
-                    className="block w-full text-left font-heading text-[#1A1A2E]/60 font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 text-sm bg-transparent border-none cursor-pointer"
-                  >
-                    Privacy Policy
-                  </motion.button>
-                  <motion.button
-                    onClick={() => {
-                      setMobileOpen(false);
-                      onNavigate("terms");
-                    }}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navLinks.length + 1) * 0.05 }}
-                    className="block w-full text-left font-heading text-[#1A1A2E]/60 font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 text-sm bg-transparent border-none cursor-pointer"
-                  >
-                    Terms of Service
-                  </motion.button>
-
-                  <motion.a
-                    href="#pricing"
-                    onClick={(e) => handleNavClick(e, "#pricing")}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: (navLinks.length + 2) * 0.05 }}
-                    className="block text-center bg-[#C9921A] text-white font-heading font-semibold px-5 py-3 rounded-lg mt-4 hover:bg-[#b07d16] transition-colors duration-200"
-                  >
-                    Enroll Now
-                  </motion.a>
-                </>
-              ) : (
+              <div className="border-t border-gray-100 pt-3 mt-3">
                 <motion.button
                   onClick={() => {
                     setMobileOpen(false);
-                    handleGoHome();
+                    navigate("/privacy");
                   }}
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0 }}
-                  className="flex items-center gap-2 w-full text-left font-heading text-[#1A1A2E] font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 bg-transparent border-none cursor-pointer"
+                  transition={{ delay: (navLinks.length + 1) * 0.05 }}
+                  className="block w-full text-left font-heading text-[#1A1A2E]/60 font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 text-sm bg-transparent border-none cursor-pointer"
                 >
-                  <ArrowLeft size={18} />
-                  Back to Home
+                  Privacy Policy
                 </motion.button>
-              )}
+                <motion.button
+                  onClick={() => {
+                    setMobileOpen(false);
+                    navigate("/terms");
+                  }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (navLinks.length + 2) * 0.05 }}
+                  className="block w-full text-left font-heading text-[#1A1A2E]/60 font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 text-sm bg-transparent border-none cursor-pointer"
+                >
+                  Terms of Service
+                </motion.button>
+              </div>
+
+              <motion.button
+                onClick={() => handleNavClick("/#pricing")}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: (navLinks.length + 3) * 0.05 }}
+                className="block w-full text-center bg-[#C9921A] text-white font-heading font-semibold px-5 py-3 rounded-lg mt-4 hover:bg-[#b07d16] transition-colors duration-200 bg-[#C9921A] border-none cursor-pointer"
+              >
+                Enroll Now
+              </motion.button>
             </div>
           </motion.div>
         )}
