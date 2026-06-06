@@ -10,15 +10,6 @@ import {
 } from "lucide-react";
 import logo from "../assets/images/logo.jpeg";
 
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "Courses", href: "/#subjects" },
-  { label: "Tutors", href: "/#tutors" },
-  { label: "Results", href: "/#success" },
-  { label: "Pricing", href: "/#pricing" },
-  { label: "eBook Store", href: "/ebooks" },
-];
-
 const courseLinks = [
   { label: "JAMB Preparation", href: "/#subjects" },
   { label: "WAEC / NECO", href: "/#subjects" },
@@ -101,22 +92,60 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Quick Links */}
-          <div>
+        {/* Column 2: Quick Links */}
+        <div>
             <h4 className="font-heading text-sm font-semibold text-[#1A1A2E] uppercase tracking-wider mb-4">
               Quick Links
             </h4>
             <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
-                  <button
-                    onClick={() => handleNavClick(link.href)}
-                    className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
+              <li>
+                <button
+                  onClick={() => navigate("/")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  Home
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/about")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#C9921A] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  About Us
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/news")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  News & Articles
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/ebooks")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  eBook Store
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/privacy")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  Privacy Policy
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/terms")}
+                  className="font-body text-sm text-[#1A1A2E]/70 hover:text-[#1A3C6E] transition-colors bg-transparent border-none cursor-pointer text-left"
+                >
+                  Terms of Service
+                </button>
+              </li>
             </ul>
           </div>
 

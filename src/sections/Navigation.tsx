@@ -197,25 +197,13 @@ export default function Navigation() {
                 >
                   Privacy Policy
                 </motion.button>
-                <motion.button
-                  onClick={() => {
-                    setMobileOpen(false);
-                    navigate("/terms");
-                  }}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: (navLinks.length + 2) * 0.05 }}
-                  className="block w-full text-left font-heading text-[#1A1A2E]/60 font-medium py-3 px-3 rounded-lg hover:text-[#C9921A] hover:bg-[#C9921A]/5 transition-colors duration-200 text-sm bg-transparent border-none cursor-pointer"
-                >
-                  Terms of Service
-                </motion.button>
               </div>
 
               <motion.button
                 onClick={() => handleNavClick("/#pricing")}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: (navLinks.length + 3) * 0.05 }}
+                transition={{ delay: (navLinks.length + 2) * 0.05 }}
                 className="block w-full text-center bg-[#C9921A] text-white font-heading font-semibold px-5 py-3 rounded-lg mt-4 hover:bg-[#b07d16] transition-colors duration-200 bg-[#C9921A] border-none cursor-pointer"
               >
                 Enroll Now

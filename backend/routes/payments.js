@@ -2,6 +2,7 @@
 const axios = require("axios");
 const crypto = require("crypto");
 const Payment = require("../models/Payment");
+const { appendPaymentRecord } = require("../services/googleSheets");
 const router = express.Router();
 
 const FLW_SECRET_KEY = process.env.FLUTTERWAVE_SECRET_KEY;
@@ -300,6 +301,20 @@ router.post("/verify", async (req, res) => {
       );
 
       console.log(`✅ Payment verified and saved: ${tx_ref}`);
+
+      // Log to Google Sheets (non-blocking)
+      appendPaymentRecord({
+        customer_name: paymentData.customer?.name || "N/A",
+        customer_email: paymentData.customer?.email || "N/A",
+        plan_name: paymentData.meta?.product_name || "Unknown",
+        amount: parseFloat(paymentData.amount),
+        currency: paymentData.currency,
+        tx_ref,
+        transaction_id: paymentData.id,
+        status: "successful",
+      }).catch((err) => {
+        console.error("⚠️ Non-blocking Google Sheets write failed:", err.message);
+      });
 
       return res.json({
         success: true,

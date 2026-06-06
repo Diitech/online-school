@@ -2,6 +2,7 @@
 const crypto = require("crypto");
 const axios = require("axios");
 const Payment = require("../models/Payment");
+const { appendPaymentRecord } = require("../services/googleSheets");
 const router = express.Router();
 
 // ── Configuration ──────────────────────────────────────────────────────────────
@@ -135,7 +136,21 @@ router.post(
         await unlockProduct(customerEmail, productId, txRef);
       }
 
-      // ── 8. Acknowledge webhook ───────────────────────────────────────────
+      // ── 8. Log to Google Sheets (non-blocking — don't await so webhook responds fast) ──
+      appendPaymentRecord({
+        customer_name: customerName,
+        customer_email: customerEmail,
+        plan_name: productId || "Unknown",
+        amount: verification.verifiedAmount,
+        currency: verification.verifiedCurrency,
+        tx_ref: txRef,
+        transaction_id: transactionId,
+        status: "successful",
+      }).catch((err) => {
+        console.error("⚠️ Non-blocking Google Sheets write failed:", err.message);
+      });
+
+      // ── 9. Acknowledge webhook ───────────────────────────────────────────
       return res.status(200).json({ status: "success" });
     } catch (error) {
       console.error("❌ Webhook processing error:", error.message);

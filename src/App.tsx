@@ -28,6 +28,7 @@ import EBookStorePage from "./pages/EBookStorePage";
 import ProductDetailPage from "./pages/ProductDetailPage";
 import NewsPage from "./pages/NewsPage";
 import ArticleDetailPage from "./pages/ArticleDetailPage";
+import AboutUs from "./pages/AboutUs";
 import NewsCategoryPage from "./pages/NewsCategoryPage";
 import NewsTagPage from "./pages/NewsTagPage";
 
@@ -129,6 +130,14 @@ export default function App() {
         <Route path="/news/category/:categorySlug" element={<NewsCategoryPage />} />
         <Route path="/news/tag/:tagSlug" element={<NewsTagPage />} />
         <Route path="/news/:slug" element={<ArticleDetailPage />} />
+        <Route
+          path="/about"
+          element={
+            <SimplePage>
+              <AboutUs />
+            </SimplePage>
+          }
+        />
       </Routes>
     </>
   );
