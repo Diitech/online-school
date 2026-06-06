@@ -16,13 +16,7 @@ import Footer from '../sections/Footer'
 import ChatBot from '../sections/ChatBot'
 import UTMEBundlePromo from '../sections/UTMEBundlePromo'
 
-type Page = 'home' | 'privacy' | 'terms'
-
-interface HomeProps {
-  onNavigate: (page: Page) => void
-}
-
-export default function Home({ onNavigate }: HomeProps) {
+export default function Home() {
   return (
     <>
       <SEO
@@ -48,7 +42,7 @@ export default function Home({ onNavigate }: HomeProps) {
       />
       
       <GlobeBackground />
-      <Navigation onNavigate={onNavigate} currentPage="home" />
+      <Navigation />
       <main className="content-layer">
         <HeroSection />
         <SocialProof />
@@ -62,8 +56,8 @@ export default function Home({ onNavigate }: HomeProps) {
         <FAQSection />
         <FinalCTA />
         <NewsletterSection />
-        <Footer onNavigate={onNavigate} />
       </main>
+      <Footer />
       <ChatBot />
     </>
   )

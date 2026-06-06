@@ -53,8 +53,8 @@ const NIGERIA_IMG = {
   school: "https://cdn.guardian.ng/wp-content/uploads/2025/11/school-in-nigeria-north.jpg",
   // Nigerian graduate
   graduate: "https://images.rawpixel.com/image_social_landscape/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvZmw0MDU1Nzc4OTE0MC1pbWFnZS1rcHFvcHI5Ny1remVtaDhtZC5qcGc.jpg",
-  // Online learning
-  online: "https://img.rawpixel.com/s3fs-private/rawpixel_images/website_content/fl40471686400-image-kudi3s5i.jpg?w=1200&h=1200",
+  // Online learning (Nigerian student on laptop - reliable Unsplash)
+  online: "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=800&q=80",
   // Insecurity / education (BizWatch Nigeria)
   insecurity: "https://bizwatchnigeria.ng/wp-content/uploads/2021/11/education-and-insecurity.jpg",
 };
