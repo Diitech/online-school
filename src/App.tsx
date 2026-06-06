@@ -1,7 +1,9 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import GlobeBackground from "./sections/GlobeBackground";
+import { useEffect, lazy } from "react";
 import Navigation from "./sections/Navigation";
+
+// Lazy load Three.js globe (650KB) — only loaded on homepage
+const GlobeBackground = lazy(() => import("./sections/GlobeBackground"));
 import HeroSection from "./sections/HeroSection";
 import SocialProof from "./sections/SocialProof";
 import FeaturedSubjects from "./sections/FeaturedSubjects";

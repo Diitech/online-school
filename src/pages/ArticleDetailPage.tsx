@@ -108,7 +108,7 @@ export default function ArticleDetailPage() {
       <SEO
         title={article.seoTitle}
         description={article.metaDescription}
-        canonical={`https://dmultichoicetutoring.com/news/${article.slug}`}
+        canonical={`${window.location.origin}/news/${article.slug}`}
         ogImage={article.featuredImage}
         structuredData={{
           "@context": "https://schema.org",

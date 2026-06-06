@@ -1,10 +1,14 @@
 ﻿const https = require('https');
 
-const SITE_URL = 'https://dmultichoicetutoring.com';
+const SITE_URL = 'https://tutoring.dmultichoice.com';
 const URLS_TO_INDEX = [
   '/',
   '/privacy',
-  '/terms'
+  '/terms',
+  '/news',
+  '/ebooks',
+  '/product/master-bundle',
+  '/product/mega-bundle',
 ];
 
 async function submitToGoogle(url) {

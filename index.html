@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1RF1BNX51T"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-1RF1BNX51T');
-    </script>
-
-    <!-- Microsoft Clarity -->
-    <script type="text/javascript">
-      (function(c,l,a,r,i,t,y){
-          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "x28mxezreo");
-    </script>
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-P5825J2X');</script>
+    <!-- End Google Tag Manager -->
     
     <meta charset="UTF-8" />
     <link rel="icon" type="image/jpeg" href="/src/assets/images/logo.jpeg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Base SEO -->
+    <!-- Font Preload — swap ensures no FOIT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'" />
+    
+    <!-- Preload hero poster image for fast LCP -->
+    <link rel="preload" as="image" href="/images/hero-poster.jpg" />
+    
+    <!-- Preconnect to third-party origins -->
+    <link rel="preconnect" href="https://checkout.flutterwave.com" />
+    <link rel="dns-prefetch" href="https://api.flutterwave.com" />
+    <link rel="dns-prefetch" href="https://lh3.googleusercontent.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
+    
+    <!-- Base SEO — overridden by SEO component per page -->
     <title>Dmultichoice Tutoring | Online Lessons, Assignment Help & Exam Prep Nigeria</title>
     <meta name="description" content="Nigeria's top online tutoring platform. Live lessons, assignment solving, homework help, task assistance, JAMB, WAEC, NECO, IELTS, SAT prep. Expert tutors available 24/7." />
     <meta name="keywords" content="online lessons Nigeria, assignment help, homework help, task solving, JAMB tutoring, WAEC tutoring, NECO tutoring, online tutoring Nigeria, IELTS coaching, SAT prep, private tutor Lagos, JAMB CBT practice, solve assignment, homework assistance, academic help" />
@@ -32,21 +38,21 @@
     <meta property="og:title" content="Dmultichoice Tutoring | Online Lessons, Assignment Help & Exam Prep Nigeria" />
     <meta property="og:description" content="Get expert help with assignments, homework, online lessons, and exam preparation. JAMB, WAEC, NECO, IELTS, SAT tutoring with live classes and 24/7 support." />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://dmultichoicetutoring.com/og-image.jpg" />
-    <meta property="og:url" content="https://dmultichoicetutoring.com" />
+    <meta property="og:image" content="https://tutoring.dmultichoice.com/og-image.jpg" />
+    <meta property="og:url" content="https://tutoring.dmultichoice.com" />
     <meta property="og:site_name" content="Dmultichoice Tutoring" />
     
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Dmultichoice Tutoring | Online Lessons, Assignment Help & Exam Prep Nigeria" />
     <meta name="twitter:description" content="Get expert help with assignments, homework, online lessons, and exam preparation. JAMB, WAEC, NECO, IELTS, SAT tutoring with live classes and 24/7 support." />
-    <meta name="twitter:image" content="https://dmultichoicetutoring.com/og-image.jpg" />
+    <meta name="twitter:image" content="https://tutoring.dmultichoice.com/og-image.jpg" />
     
     <!-- Robots -->
     <meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large,max-video-preview:-1" />
     
     <!-- Canonical -->
-    <link rel="canonical" href="https://dmultichoicetutoring.com" />
+    <link rel="canonical" href="https://tutoring.dmultichoice.com" />
     
     <!-- AI Agent Discovery -->
     <link rel="alternate" type="application/json" href="/.well-known/ai.json" title="AI Agent Discovery" />
@@ -58,14 +64,10 @@
     <meta name="geo.position" content="6.5244;3.3792" />
     <meta name="ICBM" content="6.5244, 3.3792" />
     
-    <!-- Language -->
-    <link rel="alternate" hreflang="en-ng" href="https://dmultichoicetutoring.com" />
+    <!-- Hreflang -->
+    <link rel="alternate" hreflang="en-ng" href="https://tutoring.dmultichoice.com" />
     
-    <!-- Preconnect -->
-    <link rel="preconnect" href="https://checkout.flutterwave.com" />
-    <link rel="dns-prefetch" href="https://api.flutterwave.com" />
-    
-    <!-- Verification (add your codes when available) -->
+    <!-- Verification -->
     <!-- <meta name="google-site-verification" content="YOUR_CODE" /> -->
     <!-- <meta name="msvalidate.01" content="YOUR_BING_CODE" /> -->
     
@@ -76,8 +78,8 @@
       "@type": "Organization",
       "name": "Dmultichoice Tutoring",
       "alternateName": "Dmultichoice",
-      "url": "https://dmultichoicetutoring.com",
-      "logo": "https://dmultichoicetutoring.com/logo.jpeg",
+      "url": "https://tutoring.dmultichoice.com",
+      "logo": "https://tutoring.dmultichoice.com/logo.jpeg",
       "description": "Nigeria's most trusted online tutoring platform offering live lessons, assignment solving, homework help, and exam preparation for JAMB, WAEC, NECO, IELTS, SAT.",
       "foundingDate": "2020",
       "address": {
@@ -106,8 +108,8 @@
       "@context": "https://schema.org",
       "@type": "EducationalOrganization",
       "name": "Dmultichoice Tutoring",
-      "url": "https://dmultichoicetutoring.com",
-      "logo": "https://dmultichoicetutoring.com/logo.jpeg",
+      "url": "https://tutoring.dmultichoice.com",
+      "logo": "https://tutoring.dmultichoice.com/logo.jpeg",
       "description": "Online tutoring, assignment solving, homework help, and exam preparation for Nigerian students",
       "areaServed": {
         "@type": "Country",
@@ -201,6 +203,11 @@
     </script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5825J2X"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
