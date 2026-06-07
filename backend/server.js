@@ -22,8 +22,15 @@ mongoose
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: [
+      process.env.FRONTEND_URL || "https://tutoring.dmultichoice.com",
+      "https://tutoring.dmultichoice.com",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "verif-hash"],
   })
 );
 
@@ -46,7 +53,12 @@ app.use(express.urlencoded({ extended: true }));
 // ── API Routes ─────────────────────────────────────────────────────────────────
 app.use("/api/payments", paymentRoutes);
 
-// ── Health check ───────────────────────────────────────────────────────────────
+// ── Health checks ──────────────────────────────────────────────────────────────
+// Render's built-in health checker uses GET /health by default
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
