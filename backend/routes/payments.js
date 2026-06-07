@@ -8,6 +8,9 @@ const router = express.Router();
 const FLW_SECRET_KEY = process.env.FLUTTERWAVE_SECRET_KEY;
 const FLW_PUBLIC_KEY = process.env.VITE_FLUTTERWAVE_PUBLIC_KEY;
 
+// ── Payment validation constants ───────────────────────────────────────────────
+const MIN_AMOUNT = 1000; // Minimum allowed payment in NGN
+
 // ── Product definitions ────────────────────────────────────────────────────────
 const PRODUCTS = {
   "master-bundle": {
@@ -68,16 +71,31 @@ router.post("/initialize", async (req, res) => {
       });
     }
 
-    // Determine amount
+    // ── Determine & validate amount (server-side — NEVER trust frontend) ──
     let amount;
     let productName = "DChoice Tutoring Purchase";
     let resolvedProductId = productId;
 
     if (productId && PRODUCTS[productId]) {
+      // Product-defined pricing: use fixed price, ignore user-provided amount
       amount = PRODUCTS[productId].price;
       productName = PRODUCTS[productId].name;
-    } else if (customAmount && customAmount > 0) {
-      amount = parseFloat(customAmount);
+    } else if (customAmount !== undefined && customAmount !== null) {
+      // Custom amount: validate strictly
+      const parsed = parseFloat(customAmount);
+      if (isNaN(parsed) || parsed <= 0 || !Number.isFinite(parsed)) {
+        return res.status(400).json({
+          success: false,
+          message: "Enter a valid amount (minimum ₦1,000)",
+        });
+      }
+      if (parsed < MIN_AMOUNT) {
+        return res.status(400).json({
+          success: false,
+          message: `Amount must be at least ₦${MIN_AMOUNT.toLocaleString()}`,
+        });
+      }
+      amount = parsed;
       resolvedProductId = null;
     } else {
       return res.status(400).json({
@@ -91,13 +109,18 @@ router.post("/initialize", async (req, res) => {
 
     console.log(`💰 Initializing payment: ${productName} — ₦${amount} (${txRef})`);
 
+    // Log the exact amount being sent
+    console.log(`🔍 Flutterwave payload amount: ${amount} (type: ${typeof amount})`);
+
     // Call Flutterwave API to initialize payment
+    // NOTE: payment_options is intentionally omitted — Flutterwave shows all supported
+    // payment methods (Card, Bank Transfer, USSD, Account, Mobile Money, Opay, PalmPay, etc.)
+    // based on the account's settlement configuration and the currency (NGN).
     const flutterwavePayload = {
       tx_ref: txRef,
       amount,
       currency: "NGN",
       redirect_url: callbackUrl,
-      payment_options: "card,banktransfer,ussd",
       customer: {
         email: customerEmail,
         phone_number: customerPhone || "",
@@ -224,7 +247,7 @@ router.get("/callback", async (req, res) => {
 
         // Redirect to frontend success page
         return res.redirect(
-          `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-success?tx_ref=${tx_ref}&transaction_id=${transaction_id}`
+          `${process.env.FRONTEND_URL || "https://tutoring.dmultichoice.com"}/payment-success?tx_ref=${tx_ref}&transaction_id=${transaction_id}`
         );
       }
     } catch (verifyError) {
@@ -234,7 +257,7 @@ router.get("/callback", async (req, res) => {
 
   // Failed or cancelled
   return res.redirect(
-    `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-failed?tx_ref=${tx_ref}&reason=${status || "cancelled"}`
+    `${process.env.FRONTEND_URL || "https://tutoring.dmultichoice.com"}/payment-failed?tx_ref=${tx_ref}&reason=${status || "cancelled"}`
   );
 });
 

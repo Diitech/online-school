@@ -47,7 +47,7 @@ interface EBook {
 // ── Constants ────────────────────────────────────────────────────────────────
 const WHATSAPP_NUMBER = "2348158484621";
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com/api";
 
 // ── UTME Schools Data ─────────────────────────────────────────────────────────
 const utmeSchools = [
@@ -682,6 +682,9 @@ function PaymentModal({
 
 // ── FlutterwavePayButton ─────────────────────────────────────────────────────
 // Inline component that calls the backend to initialize payment
+const MIN_AMOUNT = 1000;
+const SUGGESTED_AMOUNTS = [1000, 2000, 5000, 10000];
+
 function FlutterwavePayButton({
   ebook,
   formData,
@@ -702,21 +705,51 @@ function FlutterwavePayButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [paymentLink, setPaymentLink] = useState<string | null>(null);
+  const [customAmount, setCustomAmount] = useState<string>("");
+
+  const validateAmount = (val: string): string | null => {
+    if (!val || val.trim() === "") return null; // Optional — will use product price
+    const num = parseFloat(val);
+    if (isNaN(num) || num <= 0) return "Enter a valid amount (minimum ₦1,000)";
+    if (num < MIN_AMOUNT) return `Minimum amount is ₦${MIN_AMOUNT.toLocaleString()}`;
+    return null;
+  };
 
   const initializePayment = async () => {
+    // Determine effective amount
+    const effectiveAmount = customAmount.trim() ? parseFloat(customAmount) : ebook.price;
+
+    // Validate before sending
+    if (customAmount.trim()) {
+      const validationError = validateAmount(customAmount);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
 
     try {
+      const body: Record<string, unknown> = {
+        customer_name: formData.name,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+      };
+
+      if (customAmount.trim() && effectiveAmount !== ebook.price) {
+        // User entered a custom amount — send it for server validation
+        body.amount = effectiveAmount;
+      } else {
+        // Use product pricing
+        body.product_id = ebook.id;
+      }
+
       const response = await fetch(`${API_BASE_URL}/payments/initialize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          product_id: ebook.id,
-          customer_name: formData.name,
-          customer_email: formData.email,
-          customer_phone: formData.phone,
-        }),
+        body: JSON.stringify(body),
       });
 
       const result = await response.json();
@@ -742,9 +775,55 @@ function FlutterwavePayButton({
       <div>
         <h4 className="font-heading font-bold text-xl">Complete Payment</h4>
         <p className="text-gray-600 text-sm">
-          Pay ₦{ebook.price.toLocaleString()} via Flutterwave
+          {customAmount.trim()
+            ? `Pay ₦${parseFloat(customAmount).toLocaleString()} via Flutterwave`
+            : `Pay ₦${ebook.price.toLocaleString()} via Flutterwave`}
         </p>
       </div>
+
+      {/* Amount Input */}
+      <div className="bg-white border border-gray-200 rounded-xl p-4">
+        <label className="block text-sm font-medium text-[#1A1A2E] mb-2 text-left">
+          Enter Amount (NGN)
+        </label>
+        <div className="flex flex-wrap gap-2 mb-3">
+          {SUGGESTED_AMOUNTS.map((amt) => (
+            <button
+              key={amt}
+              type="button"
+              onClick={() => {
+                setCustomAmount(amt.toString());
+                setError(null);
+              }}
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
+                customAmount === amt.toString()
+                  ? "bg-[#C9921A] text-white border-[#C9921A]"
+                  : "bg-gray-50 text-gray-600 border-gray-200 hover:border-[#C9921A]"
+              }`}
+            >
+              ₦{amt.toLocaleString()}
+            </button>
+          ))}
+        </div>
+        <div className="relative">
+          <span className="absolute left-3 top-3 text-gray-400 font-semibold text-sm">₦</span>
+          <input
+            type="number"
+            min={MIN_AMOUNT}
+            placeholder="Or enter custom amount"
+            value={customAmount}
+            onChange={(e) => {
+              setCustomAmount(e.target.value);
+              setError(null);
+            }}
+            className="w-full pl-8 pr-4 py-2.5 rounded-lg border border-gray-200 text-sm outline-none focus:border-[#C9921A] focus:ring-2 focus:ring-[#C9921A]/20"
+          />
+        </div>
+        <p className="text-[10px] text-gray-400 mt-1 text-left">
+          Leave empty to use product price (₦{ebook.price.toLocaleString()})
+        </p>
+      </div>
+
       <div className="bg-gray-50 rounded-xl p-4">
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">Transaction Ref:</span>
@@ -779,7 +858,9 @@ function FlutterwavePayButton({
           rel="noopener noreferrer"
           className="block w-full bg-[#C9921A] text-[#1A3C6E] font-heading font-bold py-3 rounded-lg hover:bg-[#b07d16] transition-all text-center"
         >
-          Pay ₦{ebook.price.toLocaleString()}
+          {customAmount.trim()
+            ? `Pay ₦${parseFloat(customAmount).toLocaleString()}`
+            : `Pay ₦${ebook.price.toLocaleString()}`}
         </a>
       ) : (
         <button
@@ -787,7 +868,7 @@ function FlutterwavePayButton({
           disabled={loading}
           className="w-full bg-[#C9921A] text-[#1A3C6E] font-heading font-bold py-3 rounded-lg hover:bg-[#b07d16] transition-all disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {loading ? "Processing..." : `Pay ₦${ebook.price.toLocaleString()}`}
+          {loading ? "Processing..." : "Proceed to Pay"}
         </button>
       )}
 
