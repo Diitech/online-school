@@ -27,7 +27,7 @@ interface PaymentInitResponse {
 }
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com/api";
+  (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(/\/+$/, "") + "/api";
 
 // ─────────────────────────────────────────────────────────────────────────────
 
