@@ -63,7 +63,8 @@ interface CustomerInfo {
 // ── Constants ────────────────────────────────────────────────────────────────
 const FLUTTERWAVE_LINK = "https://flutterwave.com/pay/q4qsp5uayudc";
 const WHATSAPP_NUMBER = "2348158484621";
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzyVtvCcAfkOj2I8vZTxsZKrSib_Wxnzzv0ZXvLhh0iC2SSqsNMb5-mMgKg-0CP9sdUXg/exec";
+const API_BASE_URL =
+  (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(/\/+$/, "") + "/api";
 
 // ── Data ─────────────────────────────────────────────────────────────────────
 const utmeSchools = [
@@ -322,20 +323,21 @@ const ebooks: EBook[] = [
 
 const categories = ["All", "UTME", "POST-UTME", "WAEC", "NECO", "JAMB", "IELTS", "SAT", "BUNDLE"];
 
-// ── Google Sheets Logger ─────────────────────────────────────────────────────
-async function logToGoogleSheets(data: Record<string, unknown>) {
+// ── Backend Payment Logger ───────────────────────────────────────────────────
+// Logs payment events to the backend API, which handles Google Sheets recording.
+async function logPaymentToBackend(data: Record<string, unknown>) {
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(`${API_BASE_URL}/payments/log`, {
       method: "POST",
-      mode: "no-cors",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        event: data.status,
         timestamp: new Date().toISOString(),
         ...data,
       }),
     });
   } catch {
-    console.log("Google Sheets logging attempted");
+    console.log("Backend logging attempted");
   }
 }
 
@@ -389,7 +391,7 @@ function PaymentModal({
   };
 
   const handleProceedToFlutterwave = async () => {
-    await logToGoogleSheets({
+    logPaymentToBackend({
       transactionRef,
       customerName: formData.name,
       customerEmail: formData.email,
@@ -403,7 +405,7 @@ function PaymentModal({
   };
 
   const handlePaymentSuccess = async () => {
-    await logToGoogleSheets({
+    logPaymentToBackend({
       transactionRef,
       customerName: formData.name,
       customerEmail: formData.email,
@@ -418,7 +420,7 @@ function PaymentModal({
   };
 
   const handlePaymentFailed = async () => {
-    await logToGoogleSheets({
+    logPaymentToBackend({
       transactionRef,
       customerName: formData.name,
       customerEmail: formData.email,
