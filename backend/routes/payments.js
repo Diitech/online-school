@@ -72,12 +72,15 @@ router.post("/initialize", async (req, res) => {
     // ── Validate amount (server-side only, never trust frontend) ──────────
     let amount;
     let productName = "DChoice Tutoring Purchase";
-    let resolvedProductId = productId;
+    let resolvedProductId = productId || null;
 
+    // Priority: known product_id > provided amount > error
     if (productId && PRODUCTS[productId]) {
+      // Use server-defined price for known products
       amount = PRODUCTS[productId].price;
       productName = PRODUCTS[productId].name;
     } else if (customAmount !== undefined && customAmount !== null) {
+      // Validate and use the amount provided by the frontend
       const parsed = parseFloat(customAmount);
       if (isNaN(parsed) || parsed <= 0 || !Number.isFinite(parsed)) {
         return res.status(400).json({
@@ -92,7 +95,10 @@ router.post("/initialize", async (req, res) => {
         });
       }
       amount = parsed;
-      resolvedProductId = null;
+      // If productId was provided but not in PRODUCTS, use it as the product name
+      if (productId) {
+        productName = productId.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+      }
     } else {
       return res.status(400).json({
         success: false,

@@ -52,12 +52,15 @@ export default function FlutterwavePayment({
     setError(null);
 
     try {
+      // Log the amount being sent to debug 0.00 issue
+      console.log(`💳 Sending amount: ${amount}, productId: ${productId}`);
+
       const response = await fetch(`${API_BASE_URL}/payments/initialize`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: productId || null,
-          amount: productId ? undefined : amount,
+          amount,
           customer_name: customerName,
           customer_email: customerEmail,
           customer_phone: customerPhone,

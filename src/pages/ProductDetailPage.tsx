@@ -732,19 +732,15 @@ function FlutterwavePayButton({
     setError(null);
 
     try {
+      console.log(`💳 eBook payment: ${ebook.title} — ₦${effectiveAmount}`);
+
       const body: Record<string, unknown> = {
+        product_id: ebook.id,
+        amount: effectiveAmount,
         customer_name: formData.name,
         customer_email: formData.email,
         customer_phone: formData.phone,
       };
-
-      if (customAmount.trim() && effectiveAmount !== ebook.price) {
-        // User entered a custom amount — send it for server validation
-        body.amount = effectiveAmount;
-      } else {
-        // Use product pricing
-        body.product_id = ebook.id;
-      }
 
       const response = await fetch(`${API_BASE_URL}/payments/initialize`, {
         method: "POST",
