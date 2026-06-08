@@ -14,6 +14,32 @@ const PORT = process.env.PORT || 5000;
 console.log(`🚀 Starting Dmultichoice Payment Backend`);
 console.log(`🌍 Environment: ${process.env.NODE_ENV || "production"}`);
 
+// ── Validate critical environment variables ────────────────────────────────────
+const REQUIRED_ENV_VARS = [
+  { name: "FLUTTERWAVE_SECRET_KEY", desc: "Flutterwave secret key" },
+  { name: "GOOGLE_SHEET_ID", desc: "Google Sheet ID" },
+  { name: "GOOGLE_CLIENT_EMAIL", desc: "Google service account email" },
+  { name: "GOOGLE_PRIVATE_KEY", desc: "Google service account private key" },
+];
+
+let hasMissingVars = false;
+for (const v of REQUIRED_ENV_VARS) {
+  if (!process.env[v.name]) {
+    console.warn(`⚠️ Missing env var: ${v.name} (${v.desc})`);
+    hasMissingVars = true;
+  } else {
+    console.log(`✅ ${v.name} — set`);
+  }
+}
+if (process.env.GOOGLE_SHEETS_URL) {
+  console.log(`✅ GOOGLE_SHEETS_URL — set (Apps Script fallback)`);
+} else {
+  console.warn(`⚠️ GOOGLE_SHEETS_URL — NOT set (Google Sheets fallback unavailable)`);
+}
+if (hasMissingVars) {
+  console.warn("⚠️ Some critical env vars are missing — some features may not work.");
+}
+
 // ── Security middleware ─────────────────────────────────────────────────────────
 app.use(helmet());
 app.use(

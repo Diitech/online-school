@@ -6,6 +6,14 @@ const router = express.Router();
 
 const FLW_SECRET_KEY = process.env.FLUTTERWAVE_SECRET_KEY;
 
+// ── Validate critical env var at startup ─────────────────────────────────────
+if (!FLW_SECRET_KEY) {
+  console.error("❌ CRITICAL: FLUTTERWAVE_SECRET_KEY is not set in env!");
+  console.error("❌ Payment initialization will fail with 500 errors.");
+} else {
+  console.log(`✅ FLUTTERWAVE_SECRET_KEY loaded (${FLW_SECRET_KEY.length} chars)`);
+}
+
 // ── Payment validation constants ───────────────────────────────────────────────
 const MIN_AMOUNT = 1000;
 
@@ -182,10 +190,23 @@ router.post("/initialize", async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Payment init error:", {
-      message: error.message,
-      response: error.response?.data,
-    });
+    // Enhanced logging for debugging in Render logs
+    console.error("❌ Payment init error — BEGIN FULL DETAILS:");
+    console.error("   Message:", error.message);
+    if (error.response) {
+      console.error("   Flutterwave HTTP status:", error.response.status);
+      console.error("   Flutterwave response body:", JSON.stringify(error.response.data, null, 2));
+      console.error("   Flutterwave response headers:", JSON.stringify(error.response.headers, null, 2));
+    } else if (error.request) {
+      console.error("   No response received — request was sent but no reply. Network or timeout?");
+      console.error("   Request method:", error.request.method);
+      console.error("   Request path:", error.request.path);
+    } else {
+      console.error("   Request setup error — Flutterwave API call was never made.");
+    }
+    console.error("   Stack:", error.stack);
+    console.error("❌ Payment init error — END FULL DETAILS");
+
     return res.status(500).json({
       success: false,
       message: "Error initializing payment",
