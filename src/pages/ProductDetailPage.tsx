@@ -52,7 +52,10 @@ const BANK_NAME = "Moniepoint";
 const ACCOUNT_NUMBER = "7085390372";
 const ACCOUNT_NAME = "Lucky Joy Oke";
 const API_BASE_URL =
-  (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(/\/+$/, "") + "/api";
+  (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(
+    /\/+$/,
+    "",
+  ) + "/api";
 
 // ── UTME Schools Data ─────────────────────────────────────────────────────────
 const utmeSchools = [
@@ -370,7 +373,7 @@ function generateAllEBooks(): EBook[] {
       id: "master-bundle",
       title: "MASTER BUNDLE: All 23 Universities UTME Pack",
       description:
-        "Get ALL 23 university UTME past questions in one mega bundle. Save big with complete coverage for every major Nigerian university.",
+        "Buy individual schools at ₦3,000 each OR get the complete bundle of all 23 universities for just ₦15,000 and save ₦54,000! Each school pack includes 4+ years of past questions with detailed step-by-step solutions.",
       price: 15000,
       originalPrice: 34500,
       category: "BUNDLE",
@@ -610,7 +613,9 @@ function PaymentModal({
                   </span>
                 </div>
               </div>
-              <h4 className="font-heading font-semibold text-[#1A1A2E] pt-2">Choose Payment Method</h4>
+              <h4 className="font-heading font-semibold text-[#1A1A2E] pt-2">
+                Choose Payment Method
+              </h4>
               <div className="space-y-3">
                 <button
                   onClick={handleProceedToFlutterwave}
@@ -630,7 +635,10 @@ function PaymentModal({
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
                 <p className="text-sm text-blue-800 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  <span>Flutterwave is currently down. We recommend <strong>Bank Transfer</strong> for instant processing.</span>
+                  <span>
+                    Flutterwave is currently down. We recommend{" "}
+                    <strong>Bank Transfer</strong> for instant processing.
+                  </span>
                 </p>
               </div>
             </div>
@@ -650,28 +658,63 @@ function PaymentModal({
 
           {step === "bank_transfer" && (
             <div className="text-center space-y-5">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto"><Banknote className="w-8 h-8 text-green-600" /></div>
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                <Banknote className="w-8 h-8 text-green-600" />
+              </div>
               <h4 className="font-heading font-bold text-xl">Bank Transfer</h4>
-              <p className="text-gray-600 text-sm">Send <strong>₦{ebook.price.toLocaleString()}</strong> to:</p>
+              <p className="text-gray-600 text-sm">
+                Send <strong>₦{ebook.price.toLocaleString()}</strong> to:
+              </p>
               <div className="bg-green-50 border-2 border-green-200 rounded-xl p-5 space-y-3">
-                <div className="flex justify-between"><span className="text-gray-600">Bank</span><span className="font-bold text-[#1A1A2E]">{BANK_NAME}</span></div>
-                <div className="flex justify-between"><span className="text-gray-600">Account Number</span><span className="font-bold text-lg text-[#1A3C6E] font-mono">{ACCOUNT_NUMBER}</span></div>
-                <div className="flex justify-between"><span className="text-gray-600">Account Name</span><span className="font-bold text-[#1A1A2E]">{ACCOUNT_NAME}</span></div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Bank</span>
+                  <span className="font-bold text-[#1A1A2E]">{BANK_NAME}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Account Number</span>
+                  <span className="font-bold text-lg text-[#1A3C6E] font-mono">
+                    {ACCOUNT_NUMBER}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Account Name</span>
+                  <span className="font-bold text-[#1A1A2E]">
+                    {ACCOUNT_NAME}
+                  </span>
+                </div>
                 <div className="border-t pt-3 flex justify-between">
                   <span className="text-gray-600">Amount</span>
-                  <span className="font-display text-2xl font-bold text-[#C9921A]">₦{ebook.price.toLocaleString()}</span>
+                  <span className="font-display text-2xl font-bold text-[#C9921A]">
+                    ₦{ebook.price.toLocaleString()}
+                  </span>
                 </div>
               </div>
               <div className="bg-gray-50 rounded-xl p-4">
-                <p className="text-sm text-gray-600">Transaction Ref: <code className="bg-white px-2 py-1 rounded text-sm font-mono border">{transactionRef}</code></p>
+                <p className="text-sm text-gray-600">
+                  Transaction Ref:{" "}
+                  <code className="bg-white px-2 py-1 rounded text-sm font-mono border">
+                    {transactionRef}
+                  </code>
+                </p>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-                <p className="text-sm text-blue-800">After sending, click below and send screenshot proof on WhatsApp.</p>
+                <p className="text-sm text-blue-800">
+                  After sending, click below and send screenshot proof on
+                  WhatsApp.
+                </p>
               </div>
-              <button onClick={handleBankTransferSent} className="w-full bg-[#25D366] text-white font-heading font-bold py-3 rounded-lg hover:bg-[#1ea855] transition-all flex items-center justify-center gap-2">
+              <button
+                onClick={handleBankTransferSent}
+                className="w-full bg-[#25D366] text-white font-heading font-bold py-3 rounded-lg hover:bg-[#1ea855] transition-all flex items-center justify-center gap-2"
+              >
                 <CheckCircle className="w-5 h-5" /> I Have Sent the Money
               </button>
-              <button onClick={() => setStep("payment")} className="w-full text-gray-500 font-medium py-2 hover:text-gray-700 transition-all">← Back to Payment Methods</button>
+              <button
+                onClick={() => setStep("payment")}
+                className="w-full text-gray-500 font-medium py-2 hover:text-gray-700 transition-all"
+              >
+                ← Back to Payment Methods
+              </button>
             </div>
           )}
 
@@ -772,13 +815,16 @@ function FlutterwavePayButton({
     if (!val || val.trim() === "") return null; // Optional — will use product price
     const num = parseFloat(val);
     if (isNaN(num) || num <= 0) return "Enter a valid amount (minimum ₦1,000)";
-    if (num < MIN_AMOUNT) return `Minimum amount is ₦${MIN_AMOUNT.toLocaleString()}`;
+    if (num < MIN_AMOUNT)
+      return `Minimum amount is ₦${MIN_AMOUNT.toLocaleString()}`;
     return null;
   };
 
   const initializePayment = async () => {
     // Determine effective amount
-    const effectiveAmount = customAmount.trim() ? parseFloat(customAmount) : ebook.price;
+    const effectiveAmount = customAmount.trim()
+      ? parseFloat(customAmount)
+      : ebook.price;
 
     // Validate before sending
     if (customAmount.trim()) {
@@ -863,7 +909,9 @@ function FlutterwavePayButton({
           ))}
         </div>
         <div className="relative">
-          <span className="absolute left-3 top-3 text-gray-400 font-semibold text-sm">₦</span>
+          <span className="absolute left-3 top-3 text-gray-400 font-semibold text-sm">
+            ₦
+          </span>
           <input
             type="number"
             min={MIN_AMOUNT}
