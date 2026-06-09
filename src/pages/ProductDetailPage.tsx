@@ -125,8 +125,8 @@ function generateAllEBooks(): EBook[] {
       id,
       title: `${shortName} UTME Past Questions & Answers`,
       description: `Complete UTME past questions and detailed answers for ${school}. Covers all subjects with step-by-step solutions, marking schemes, and expert tips to score 280+.`,
-      price: 1500,
-      originalPrice: 2500,
+      price: 3000,
+      originalPrice: 4000,
       category: "UTME",
       school,
       pages: 350 + ((index * 37) % 200),
@@ -1046,8 +1046,9 @@ export default function ProductDetailPage() {
                   <img
                     src={ebook.imageUrl}
                     alt={ebook.title}
-                    className="absolute inset-0 w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                     onError={() => setImgError(true)}
+                    referrerPolicy="no-referrer"
                   />
                 ) : ebook.category === "BUNDLE" ? (
                   <div className="text-center">
