@@ -1,4 +1,5 @@
 ﻿require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -83,9 +84,24 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// ── 404 handler ─────────────────────────────────────────────────────────────────
+// ── Serve React SPA build (production) ─────────────────────────────────────────
+const frontendBuildPath = path.join(__dirname, "..", "dist");
+
+app.use(express.static(frontendBuildPath));
+
+// SPA fallback: serve index.html for all non-API, non-file routes so direct URLs
+// like /product/master-bundle or /product/utme-1 work when shared/bookmarked.
+app.get("*", (req, res) => {
+  if (req.path.startsWith("/api")) return;
+  if (path.extname(req.path)) return; // has a file extension, let static handle it
+  res.sendFile(path.join(frontendBuildPath, "index.html"));
+});
+
+// ── 404 handler for API routes only ────────────────────────────────────────────
 app.use((req, res) => {
-  res.status(404).json({ error: "Not found" });
+  if (req.path.startsWith("/api")) {
+    res.status(404).json({ error: "Not found" });
+  }
 });
 
 // ── Error handler ──────────────────────────────────────────────────────────────
