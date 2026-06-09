@@ -17,6 +17,8 @@ import {
   User,
   CheckCircle,
   AlertCircle,
+  Banknote,
+  CreditCard,
   ExternalLink,
   X,
   ImageIcon,
@@ -46,6 +48,9 @@ interface EBook {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 const WHATSAPP_NUMBER = "2348158484621";
+const BANK_NAME = "Moniepoint";
+const ACCOUNT_NUMBER = "7085390372";
+const ACCOUNT_NAME = "Lucky Joy Oke";
 const API_BASE_URL =
   (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(/\/+$/, "") + "/api";
 
@@ -465,11 +470,12 @@ function PaymentModal({
   onClose: () => void;
 }) {
   const [step, setStep] = useState<
-    "form" | "payment" | "flutterwave" | "success" | "failed"
+    "form" | "payment" | "flutterwave" | "bank_transfer" | "success" | "failed"
   >("form");
   const [formData, setFormData] = useState({ name: "", email: "", phone: "" });
   const [transactionRef] = useState(() => generateTransactionRef());
   const [copied, setCopied] = useState(false);
+  const [wasBankTransfer, setWasBankTransfer] = useState(false);
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -480,7 +486,16 @@ function PaymentModal({
     setStep("flutterwave");
   };
 
+  const handleProceedToBankTransfer = () => {
+    setStep("bank_transfer");
+  };
+
   const handlePaymentSuccess = () => {
+    setStep("success");
+  };
+
+  const handleBankTransferSent = () => {
+    setWasBankTransfer(true);
     setStep("success");
   };
 
@@ -493,6 +508,8 @@ function PaymentModal({
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const whatsappBankTransferMessage = `Hi%20DChoice%20Tutoring!%0A%0AI%20made%20a%20bank%20transfer%20for%20my%20eBook.%0A%0A*Transaction%20Ref:*%20${transactionRef}%0A*Name:*%20${encodeURIComponent(formData.name)}%0A*Email:*%20${encodeURIComponent(formData.email)}%0A*Phone:*%20${encodeURIComponent(formData.phone)}%0A%0A*eBook:*%20${encodeURIComponent(ebook.title)}%0A*Amount%20Sent:*%20₦${ebook.price.toLocaleString()}%0A*Bank:*%20${encodeURIComponent(BANK_NAME)}%0A*Account:*%20${encodeURIComponent(ACCOUNT_NUMBER)}%0A%0A📸%20Here%20is%20my%20transfer%20proof%20(screenshot).%20Please%20verify%20and%20send%20my%20eBook.`;
 
   const whatsappSuccessMessage = `Hi%20DChoice%20Tutoring!%0A%0AI%20just%20completed%20payment%20for%20my%20eBook.%0A%0A*Transaction%20Ref:*%20${transactionRef}%0A*Name:*%20${encodeURIComponent(formData.name)}%0A*Email:*%20${encodeURIComponent(formData.email)}%0A*Phone:*%20${encodeURIComponent(formData.phone)}%0A%0A*eBook:*%20${encodeURIComponent(ebook.title)}%0A*Price:*%20₦${ebook.price.toLocaleString()}%0A%0AHere%20is%20my%20proof%20of%20payment.%20Please%20send%20my%20eBook.`;
 
@@ -593,12 +610,29 @@ function PaymentModal({
                   </span>
                 </div>
               </div>
-              <button
-                onClick={handleProceedToFlutterwave}
-                className="w-full bg-[#C9921A] text-[#1A3C6E] font-heading font-bold py-3 rounded-lg hover:bg-[#b07d16] transition-all"
-              >
-                Proceed to Flutterwave
-              </button>
+              <h4 className="font-heading font-semibold text-[#1A1A2E] pt-2">Choose Payment Method</h4>
+              <div className="space-y-3">
+                <button
+                  onClick={handleProceedToFlutterwave}
+                  className="w-full bg-white border-2 border-[#C9921A] text-[#1A3C6E] font-heading font-bold py-3 rounded-lg hover:bg-[#C9921A]/5 transition-all flex items-center justify-center gap-3"
+                >
+                  <CreditCard className="w-5 h-5 text-[#C9921A]" />
+                  <span>Pay with Flutterwave (Card/USSD/Bank)</span>
+                </button>
+                <button
+                  onClick={handleProceedToBankTransfer}
+                  className="w-full bg-[#1A3C6E] text-white font-heading font-bold py-3 rounded-lg hover:bg-[#142d54] transition-all flex items-center justify-center gap-3"
+                >
+                  <Banknote className="w-5 h-5" />
+                  <span>Bank Transfer — Moniepoint</span>
+                </button>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-800 flex items-start gap-2">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>Flutterwave is currently down. We recommend <strong>Bank Transfer</strong> for instant processing.</span>
+                </p>
+              </div>
             </div>
           )}
 
@@ -614,6 +648,33 @@ function PaymentModal({
             />
           )}
 
+          {step === "bank_transfer" && (
+            <div className="text-center space-y-5">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto"><Banknote className="w-8 h-8 text-green-600" /></div>
+              <h4 className="font-heading font-bold text-xl">Bank Transfer</h4>
+              <p className="text-gray-600 text-sm">Send <strong>₦{ebook.price.toLocaleString()}</strong> to:</p>
+              <div className="bg-green-50 border-2 border-green-200 rounded-xl p-5 space-y-3">
+                <div className="flex justify-between"><span className="text-gray-600">Bank</span><span className="font-bold text-[#1A1A2E]">{BANK_NAME}</span></div>
+                <div className="flex justify-between"><span className="text-gray-600">Account Number</span><span className="font-bold text-lg text-[#1A3C6E] font-mono">{ACCOUNT_NUMBER}</span></div>
+                <div className="flex justify-between"><span className="text-gray-600">Account Name</span><span className="font-bold text-[#1A1A2E]">{ACCOUNT_NAME}</span></div>
+                <div className="border-t pt-3 flex justify-between">
+                  <span className="text-gray-600">Amount</span>
+                  <span className="font-display text-2xl font-bold text-[#C9921A]">₦{ebook.price.toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="bg-gray-50 rounded-xl p-4">
+                <p className="text-sm text-gray-600">Transaction Ref: <code className="bg-white px-2 py-1 rounded text-sm font-mono border">{transactionRef}</code></p>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p className="text-sm text-blue-800">After sending, click below and send screenshot proof on WhatsApp.</p>
+              </div>
+              <button onClick={handleBankTransferSent} className="w-full bg-[#25D366] text-white font-heading font-bold py-3 rounded-lg hover:bg-[#1ea855] transition-all flex items-center justify-center gap-2">
+                <CheckCircle className="w-5 h-5" /> I Have Sent the Money
+              </button>
+              <button onClick={() => setStep("payment")} className="w-full text-gray-500 font-medium py-2 hover:text-gray-700 transition-all">← Back to Payment Methods</button>
+            </div>
+          )}
+
           {step === "success" && (
             <div className="text-center space-y-5">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
@@ -627,7 +688,7 @@ function PaymentModal({
                   Send proof on WhatsApp for instant delivery:
                 </p>
                 <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappSuccessMessage}`}
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${wasBankTransfer ? whatsappBankTransferMessage : whatsappSuccessMessage}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#25D366] text-white font-heading font-bold px-6 py-3 rounded-lg hover:bg-[#1ea855] transition-all"
