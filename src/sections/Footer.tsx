@@ -11,6 +11,7 @@ import {
 import logo from "../assets/images/logo.jpeg";
 
 const courseLinks = [
+  { label: "JAMB Lessons — ₦5,000 (Holiday)", href: "/jamb-holiday-lessons" },
   { label: "JAMB Preparation", href: "/#subjects" },
   { label: "WAEC / NECO", href: "/#subjects" },
   { label: "IELTS Coaching", href: "/#subjects" },

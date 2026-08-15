@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowLeft } from "lucide-react";
 import logo from "../assets/images/logo.jpeg";
+import MegaMenu from "../components/professional/MegaMenu";
+import MobileAcademyAccordion from "../components/professional/MobileAcademyAccordion";
+import JambNavCTA from "./JambNavCTA";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -118,6 +121,30 @@ export default function Navigation() {
                 {link.label}
               </button>
             ))}
+
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => handleNavClick("/professional-schools")}
+                className={`font-heading text-sm font-medium transition-colors duration-200 hover:text-[#C9921A] bg-transparent border-none cursor-pointer ${
+                  scrolled ? "text-[#1A1A2E]" : "text-white/90"
+                } ${
+                  location.pathname.startsWith("/professional-schools")
+                    ? "text-[#C9921A]"
+                    : ""
+                }`}
+                aria-label="Professional Schools"
+              >
+                Professional Schools
+              </button>
+
+              {/* Show mega menu when on a pro-school route (keeps behavior simple + stable) */}
+              {location.pathname.startsWith("/professional-schools") ? (
+                <div className="pt-4">
+                  <MegaMenu onNavigate={() => setMobileOpen(false)} />
+                </div>
+              ) : null}
+            </div>
           </div>
 
           {/* Desktop CTA */}
@@ -138,6 +165,7 @@ export default function Navigation() {
             >
               Terms
             </button>
+            <JambNavCTA />
             <button
               onClick={() => handleNavClick("/#pricing")}
               className="inline-block bg-[#C9921A] text-white font-heading text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-[#b07d16] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
@@ -184,7 +212,24 @@ export default function Navigation() {
                 </motion.button>
               ))}
 
+              {/* Mobile expandable accordion for Professional Schools */}
+              <div className="mt-2">
+                <MobileAcademyAccordion
+                  onNavigate={() => setMobileOpen(false)}
+                />
+              </div>
+
               <div className="border-t border-gray-100 pt-3 mt-3">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: (navLinks.length + 1) * 0.05 }}
+                >
+                  <JambNavCTA
+                    onNavigate={() => setMobileOpen(false)}
+                    className="w-full justify-center py-3"
+                  />
+                </motion.div>
                 <motion.button
                   onClick={() => {
                     setMobileOpen(false);

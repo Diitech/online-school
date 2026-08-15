@@ -30,6 +30,10 @@ const PRODUCTS = {
     name: "Mega Bundle: All Exams + All Schools",
     price: 25000,
   },
+  "jamb-holiday-lessons": {
+    name: "Holiday & JAMB Online Lessons Registration",
+    price: 5000,
+  },
   "starter-plan": {
     name: "Starter Plan",
     price: 50000,
@@ -61,6 +65,7 @@ router.post("/initialize", async (req, res) => {
       customer_name: customerName,
       customer_email: customerEmail,
       customer_phone: customerPhone,
+      redirect_url: providedRedirect,
     } = req.body;
 
     // ── Validate customer info ────────────────────────────────────────────
@@ -115,10 +120,24 @@ router.post("/initialize", async (req, res) => {
     }
 
     const txRef = generateTxRef(resolvedProductId);
-    const callbackUrl = `${process.env.FRONTEND_URL || "https://tutoring.dmultichoice.com"}/payment-success`;
+
+    // ── Redirect URL (safe) ──────────────────────────────────────────────
+    // Only same-site relative paths are allowed (prevents open redirects).
+    // The JAMB landing page passes /jamb-holiday-lessons/success so paid
+    // students land on the dedicated success page. Defaults to the global
+    // success page.
+    let redirectPath = "/payment-success";
+    if (
+      typeof providedRedirect === "string" &&
+      providedRedirect.startsWith("/") &&
+      !providedRedirect.startsWith("//")
+    ) {
+      redirectPath = providedRedirect.split("?")[0].split("#")[0];
+    }
+    const callbackUrl = `${process.env.FRONTEND_URL || "https://tutoring.dmultichoice.com"}${redirectPath}`;
 
     console.log(
-      `💰 Initializing LIVE payment: ${productName} — ₦${amount} (${txRef})`,
+      `💰 Initializing LIVE payment: ${productName} — ₦${amount} (${txRef}) → ${callbackUrl}`,
     );
 
     // ── Call Flutterwave LIVE API ─────────────────────────────────────────

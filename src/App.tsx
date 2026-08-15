@@ -1,6 +1,8 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { useEffect, lazy } from "react";
 import Navigation from "./sections/Navigation";
+import HolidayAnnouncement from "./sections/HolidayAnnouncement";
+import HolidayPromoPopup from "./sections/HolidayPromoPopup";
 
 // Lazy load Three.js globe (650KB) — only loaded on homepage
 const GlobeBackground = lazy(() => import("./sections/GlobeBackground"));
@@ -31,6 +33,12 @@ import ArticleDetailPage from "./pages/ArticleDetailPage";
 import AboutUs from "./pages/AboutUs";
 import NewsCategoryPage from "./pages/NewsCategoryPage";
 import NewsTagPage from "./pages/NewsTagPage";
+import ProfessionalSchoolsLanding from "./pages/professional-schools/ProfessionalSchoolsLanding";
+import JambHolidayLessons from "./pages/JambHolidayLessons";
+import JambHolidaySuccess from "./pages/JambHolidaySuccess";
+import AcademyPage from "./pages/professional-schools/academy/AcademyPage";
+import CoursePage from "./pages/professional-schools/course/CoursePage";
+import BrochurePage from "./pages/professional-schools/brochure/BrochurePage";
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -46,7 +54,9 @@ function HomePage() {
   return (
     <>
       <GlobeBackground />
+      <HolidayAnnouncement />
       <Navigation />
+      <HolidayPromoPopup />
       <main className="content-layer">
         <HeroSection />
         <SocialProof />
@@ -127,7 +137,10 @@ export default function App() {
         <Route path="/ebooks" element={<EBookStoreLayout />} />
         <Route path="/product/:productId" element={<ProductDetailLayout />} />
         <Route path="/news" element={<NewsPage />} />
-        <Route path="/news/category/:categorySlug" element={<NewsCategoryPage />} />
+        <Route
+          path="/news/category/:categorySlug"
+          element={<NewsCategoryPage />}
+        />
         <Route path="/news/tag/:tagSlug" element={<NewsTagPage />} />
         <Route path="/news/:slug" element={<ArticleDetailPage />} />
         <Route
@@ -137,6 +150,27 @@ export default function App() {
               <AboutUs />
             </SimplePage>
           }
+        />
+        <Route
+          path="/professional-schools"
+          element={<ProfessionalSchoolsLanding />}
+        />
+        <Route path="/jamb-holiday-lessons" element={<JambHolidayLessons />} />
+        <Route
+          path="/jamb-holiday-lessons/success"
+          element={<JambHolidaySuccess />}
+        />
+        <Route
+          path="/professional-schools/:academySlug"
+          element={<AcademyPage />}
+        />
+        <Route
+          path="/professional-schools/:academySlug/:courseSlug"
+          element={<CoursePage />}
+        />
+        <Route
+          path="/professional-schools/:academySlug/:courseSlug/brochure"
+          element={<BrochurePage />}
         />
       </Routes>
     </>

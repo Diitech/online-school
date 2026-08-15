@@ -3,7 +3,8 @@ const { google } = require("googleapis");
 /**
  * Google Sheets Service
  *
- * Appends verified Flutterwave payment records to a Google Sheet.
+ * Appends verified Flutterwave payment records and JAMB lesson
+ * registrations to Google Sheets.
  * Uses a Google Service Account for authentication.
  *
  * Environment variables required:
@@ -15,7 +16,6 @@ const { google } = require("googleapis");
  */
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID;
-const GOOGLE_PROJECT_ID = process.env.GOOGLE_PROJECT_ID;
 const GOOGLE_CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
 const GOOGLE_PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY;
 const FALLBACK_URL = process.env.GOOGLE_SHEETS_URL;
@@ -23,7 +23,7 @@ const FALLBACK_URL = process.env.GOOGLE_SHEETS_URL;
 const SHEET_NAME = "Sheet1";          // Tab name within the sheet
 const RANGE = `${SHEET_NAME}!A:I`;    // Columns A through I
 
-// ── Column headers (written on first row if sheet is empty) ──────────────────
+// ── Pay- ment column headers (written on first row if sheet is empty) ────────
 const HEADERS = [
   "Date",
   "Customer Name",
@@ -34,6 +34,26 @@ const HEADERS = [
   "Transaction Reference",
   "Flutterwave Transaction ID",
   "Payment Status",
+];
+
+// ── JAMB Registration tab + headers ──────────────────────────────────────────
+const JAMB_SHEET_NAME = "JAMBRegistrations";
+const JAMB_RANGE = `${JAMB_SHEET_NAME}!A:N`;
+const JAMB_HEADERS = [
+  "Registration Reference",
+  "Date",
+  "Student Full Name",
+  "Parent/Guardian Name",
+  "Phone",
+  "WhatsApp",
+  "Email",
+  "Subjects",
+  "Payment Method",
+  "Payment Status",
+  "Payment Reference",
+  "Amount",
+  "Status",
+  "Notes",
 ];
 
 // ── Determine if Google Service Account credentials are available ────────────
@@ -164,4 +184,139 @@ async function appendPaymentRecord(paymentData) {
   return { success: false, method: "none" };
 }
 
-module.exports = { appendPaymentRecord, hasServiceAccount };
+// ── Ensure JAMBRegistrations tab + headers exist ─────────────────────────────
+async function ensureJambTab(sheets) {
+  const tabs = await sheets.spreadsheets.get({
+    spreadsheetId: SHEET_ID,
+  });
+  const hasTab = tabs.data.sheets?.some(
+    (s) => s.properties?.title === JAMB_SHEET_NAME,
+  );
+
+  if (!hasTab) {
+    await sheets.spreadsheets.batchUpdate({
+      spreadsheetId: SHEET_ID,
+      requestBody: {
+        requests: [
+          {
+            addSheet: {
+              properties: { title: JAMB_SHEET_NAME },
+            },
+          },
+        ],
+      },
+    });
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `${JAMB_SHEET_NAME}!A1:N1`,
+      valueInputOption: "RAW",
+      requestBody: { values: [JAMB_HEADERS] },
+    });
+    console.log("📋 JAMBRegistrations tab + headers created");
+  }
+}
+
+/**
+ * Append a JAMB/Holiday lessons registration to Google Sheets.
+ * The tab "JAMBRegistrations" is created automatically on first write.
+ * Payment statuses: pending_payment | payment_initiated | pending_verification | paid | cancelled
+ */
+async function appendJambRegistration(registration) {
+  const {
+    reg_ref = "",
+    date = new Date().toISOString(),
+    student_name = "",
+    parent_name = "",
+    phone = "",
+    whatsapp = "",
+    email = "",
+    subjects = "",
+    payment_method = "online",
+    payment_status = "pending_payment",
+    payment_reference = "",
+    amount = 5000,
+  } = registration;
+
+  const row = [
+    reg_ref,
+    date,
+    student_name,
+    parent_name,
+    phone,
+    whatsapp,
+    email,
+    subjects,
+    payment_method,
+    payment_status,
+    payment_reference,
+    amount.toString(),
+    payment_status, // Status column mirrors payment status for admin filtering
+    "",
+  ];
+
+  // ── Primary method: Google Sheets API via Service Account ──────────────────
+  if (hasServiceAccount()) {
+    try {
+      const sheets = getSheetsClient();
+      await ensureJambTab(sheets);
+
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SHEET_ID,
+        range: JAMB_RANGE,
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+        requestBody: { values: [row] },
+      });
+
+      console.log(`✅ JAMB registration recorded in Google Sheets: ${reg_ref}`);
+      return { success: true, method: "sheets_api" };
+    } catch (error) {
+      console.error(
+        "❌ JAMB Sheets API append failed:",
+        error.response?.data?.error?.message || error.message,
+      );
+      // Fall through to fallback method
+    }
+  }
+
+  // ── Fallback method: Google Apps Script webhook URL ────────────────────────
+  if (FALLBACK_URL) {
+    try {
+      await require("axios").post(
+        FALLBACK_URL,
+        {
+          tab: JAMB_SHEET_NAME,
+          timestamp: date,
+          reg_ref,
+          student_name,
+          parent_name,
+          phone,
+          whatsapp,
+          email,
+          subjects,
+          payment_method,
+          payment_status,
+          payment_reference,
+          amount,
+        },
+        { headers: { "Content-Type": "application/json" }, timeout: 10000 },
+      );
+      console.log(`✅ JAMB registration logged via fallback URL: ${reg_ref}`);
+      return { success: true, method: "fallback" };
+    } catch (fallbackError) {
+      console.error(
+        "❌ JAMB fallback sheet URL failed:",
+        fallbackError.message,
+      );
+    }
+  }
+
+  console.error("❌ All JAMB Google Sheets write methods failed.");
+  return { success: false, method: "none" };
+}
+
+module.exports = {
+  appendPaymentRecord,
+  appendJambRegistration,
+  hasServiceAccount,
+};

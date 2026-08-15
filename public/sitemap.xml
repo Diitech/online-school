@@ -70,6 +70,14 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- JAMB HOLIDAY LESSONS LANDING -->
+  <url>
+    <loc>https://tutoring.dmultichoice.com/jamb-holiday-lessons</loc>
+    <lastmod>2026-08-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
   <!-- EBOOK STORE -->
   <url>
     <loc>https://tutoring.dmultichoice.com/ebooks</loc>

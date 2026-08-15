@@ -11,6 +11,11 @@ export interface FlutterwavePaymentProps {
   buttonClassName?: string;
   /** When true, triggers payment immediately on mount */
   autoTrigger?: boolean;
+  /**
+   * Optional same-site redirect path (e.g. /jamb-holiday-lessons/success).
+   * Defaults to /payment-success when omitted.
+   */
+  redirectUrl?: string;
   onModalClose?: () => void;
 }
 
@@ -41,6 +46,7 @@ export default function FlutterwavePayment({
   buttonText = "Pay Now",
   buttonClassName = "",
   autoTrigger = false,
+  redirectUrl,
   onModalClose,
 }: FlutterwavePaymentProps) {
   const [loading, setLoading] = useState(false);
@@ -64,7 +70,7 @@ export default function FlutterwavePayment({
           customer_name: customerName,
           customer_email: customerEmail,
           customer_phone: customerPhone,
-          redirect_url: `${window.location.origin}/payment-success`,
+          redirect_url: redirectUrl || `${window.location.origin}/payment-success`,
         }),
       });
 
@@ -91,7 +97,7 @@ export default function FlutterwavePayment({
       setLoading(false);
       onModalClose?.();
     }
-  }, [amount, planName, customerName, customerEmail, customerPhone, productId, onModalClose]);
+  }, [amount, planName, customerName, customerEmail, customerPhone, productId, redirectUrl, onModalClose]);
 
   // ── Auto-trigger ──────────────────────────────────────────────────────────
   // We use a flag approach: autoTrigger runs once on mount via a click simulation

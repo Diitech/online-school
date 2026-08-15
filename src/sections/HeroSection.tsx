@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { MessageCircle, X, Phone } from "lucide-react";
 import { Users, GraduationCap, TrendingUp, Clock } from "lucide-react";
+import JambNavCTA from "./JambNavCTA";
 
 const stats = [
   { icon: Users, value: 5000, suffix: "+", label: "Students" },
@@ -178,6 +179,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.8, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
         >
+          <JambNavCTA className="justify-center text-base px-8 py-4 rounded-lg" />
           <a
             href="#pricing"
             onClick={(e) => {

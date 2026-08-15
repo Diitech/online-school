@@ -7,6 +7,7 @@ const rateLimit = require("express-rate-limit");
 
 const paymentRoutes = require("./routes/payments");
 const webhookRoutes = require("./routes/webhooks");
+const jambRegistrationRoutes = require("./routes/jambRegistrations");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -71,6 +72,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // ── API Routes ──────────────────────────────────────────────────────────────────
 app.use("/api/payments", paymentRoutes);
+app.use("/api/jamb-registrations", jambRegistrationRoutes.router);
 
 // ── Health check (for Render's built-in health checker) ────────────────────────
 app.get("/health", (req, res) => {
