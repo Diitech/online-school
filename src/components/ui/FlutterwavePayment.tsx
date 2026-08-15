@@ -1,4 +1,4 @@
-﻿import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 export interface FlutterwavePaymentProps {
   amount: number;
@@ -34,7 +34,7 @@ interface PaymentInitResponse {
 const API_BASE_URL =
   (import.meta.env.VITE_API_URL || "https://tutoring.dmultichoice.com").replace(/\/+$/, "") + "/api";
 
-// ─────────────────────────────────────────────────────────────────────────────
+// -----------------------------------------------------------------------------
 
 export default function FlutterwavePayment({
   amount,
@@ -52,14 +52,14 @@ export default function FlutterwavePayment({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ── Initialize payment via backend API ────────────────────────────────────
+  // -- Initialize payment via backend API ------------------------------------
   const initializePayment = useCallback(async () => {
     setLoading(true);
     setError(null);
 
     try {
       // Log the amount being sent to debug 0.00 issue
-      console.log(`💳 Sending amount: ${amount}, productId: ${productId}`);
+      console.log(`?? Sending amount: ${amount}, productId: ${productId}`);
 
       const response = await fetch(`${API_BASE_URL}/payments/initialize`, {
         method: "POST",
@@ -84,7 +84,7 @@ export default function FlutterwavePayment({
 
       // Log the initialization
       console.log(
-        `🔗 Payment initialized: ${planName} — ₦${amount} (${tx_ref})`,
+        `?? Payment initialized: ${planName} � ?${amount} (${tx_ref})`,
       );
 
       // Open payment link in same tab (standard checkout flow)
@@ -92,23 +92,29 @@ export default function FlutterwavePayment({
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Payment initialization failed";
-      console.error("❌ Payment initialization error:", message);
+      console.error("? Payment initialization error:", message);
       setError(message);
       setLoading(false);
       onModalClose?.();
     }
   }, [amount, planName, customerName, customerEmail, customerPhone, productId, redirectUrl, onModalClose]);
 
-  // ── Auto-trigger ──────────────────────────────────────────────────────────
-  // We use a flag approach: autoTrigger runs once on mount via a click simulation
-  // but to keep it simple, we call initializePayment when autoTrigger is true.
-  // The parent unmounts this component after use, so it only runs once.
-  if (autoTrigger && !loading && !error) {
-    // Use setTimeout to not block rendering
-    setTimeout(() => initializePayment(), 100);
-  }
+  // -- Auto-trigger ----------------------------------------------------------
+  // Trigger payment once after the component mounts.
+  const autoTriggeredRef = useRef(false);
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (autoTrigger && !autoTriggeredRef.current) {
+      autoTriggeredRef.current = true;
+      const timer = window.setTimeout(() => {
+        initializePayment();
+      }, 100);
+
+      return () => window.clearTimeout(timer);
+    }
+  }, [autoTrigger, initializePayment]);
+
+  // -- Render ----------------------------------------------------------------
   const baseClasses =
     "inline-flex items-center justify-center gap-2 font-heading text-sm font-semibold px-6 py-3 rounded-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg";
 
@@ -164,3 +170,4 @@ export default function FlutterwavePayment({
     </div>
   );
 }
+
